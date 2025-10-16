@@ -1,19 +1,24 @@
-# models/cita_model.py
-class Cita:
-    def __init__(self, id, paciente, medico, fecha, hora, motivo):
-        self.id = id
-        self.paciente = paciente
-        self.medico = medico
-        self.fecha = fecha
-        self.hora = hora
-        self.motivo = motivo
+from sqlalchemy import Column, Integer, String, Date, Time
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class Cita(Base):
+    __tablename__ = 'citas'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    cliente = Column(String(100), nullable=False)
+    servicio = Column(String(100), nullable=False)
+    fecha = Column(Date, nullable=False)
+    hora = Column(Time, nullable=False)
+    estado = Column(String(50), default='pendiente')  # pendiente / confirmada / cancelada
 
     def to_dict(self):
         return {
             "id": self.id,
-            "paciente": self.paciente,
-            "medico": self.medico,
-            "fecha": self.fecha,
-            "hora": self.hora,
-            "motivo": self.motivo
+            "cliente": self.cliente,
+            "servicio": self.servicio,
+            "fecha": self.fecha.isoformat() if self.fecha else None,
+            "hora": self.hora.strftime("%H:%M:%S") if self.hora else None,
+            "estado": self.estado
         }
