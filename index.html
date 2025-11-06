@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Citas Médicas</title>
+</head>
+<body>
+  <h1>Registrar Cita Médica</h1>
+  <form id="formulario">
+    <input type="text" id="paciente" placeholder="Nombre del paciente" required><br>
+    <input type="date" id="fecha" required><br>
+    <input type="time" id="hora" required><br>
+    <input type="text" id="motivo" placeholder="Motivo de la consulta" required><br>
+    <select id="estado" required>
+      <option value="">Estado de la cita</option>
+      <option value="pendiente">Pendiente</option>
+      <option value="confirmada">Confirmada</option>
+      <option value="cancelada">Cancelada</option>
+    </select><br>
+    <button type="submit">Registrar</button>
+  </form>
+
+  <h2>Citas Registradas</h2>
+  <ul id="listaCitas"></ul>
+
+  <script>
+    document.getElementById('formulario').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const datos = {
+        paciente: document.getElementById('paciente').value,
+        fecha: document.getElementById('fecha').value,
+        hora: document.getElementById('hora').value,
+        motivo: document.getElementById('motivo').value,
+        estado: document.getElementById('estado').value
+      };
+
+      fetch('http://localhost:5000/citas', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(datos)
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert('Cita registrada');
+        cargarCitas();
+      })
+      .catch(err => alert('Error al registrar cita'));
+    });
+
+    function cargarCitas() {
+      fetch('http://localhost:5000/citas')
+        .then(res => res.json())
+        .then(data => {
+          const lista = document.getElementById('listaCitas');
+          lista.innerHTML = '';
+          data.forEach(cita => {
+            const item = document.createElement('li');
+            item.textContent = `Paciente: ${cita.paciente}, Fecha: ${cita.fecha}, Hora: ${cita.hora}, Motivo: ${cita.motivo}, Estado: ${cita.estado}`;
+            lista.appendChild(item);
+          });
+        });
+    }
+
+    // Cargar al iniciar
+    cargarCitas();
+  </script>
+</body>
+</html>
