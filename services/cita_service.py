@@ -1,9 +1,6 @@
 # services/cita_service.py
 from repositories.cita_repository import CitaRepository
 
-from models.cita_model import Base
-from sqlalchemy.orm import Session
-
 class CitaService:
     def __init__(self):
         self.repo = CitaRepository()
