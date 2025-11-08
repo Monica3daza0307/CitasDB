@@ -13,19 +13,25 @@ class CitaRepository:
 
     def create(self, data):
         nueva_cita = Cita(
+            cliente=data.get('cliente'),
+            servicio=data.get('servicio'),
             fecha=data.get('fecha'),
-            descripcion=data.get('descripcion')
+            hora=data.get('hora'),
+            estado=data.get('estado', 'pendiente')
         )
         db.session.add(nueva_cita)
         db.session.commit()
-        return nueva_cita.to_dict()  # 👈 devuelves un dict
+        return nueva_cita.to_dict()
 
     def update(self, cita_id, data):
         cita = Cita.query.get(cita_id)
         if not cita:
             return None
+        cita.cliente = data.get('cliente', cita.cliente)
+        cita.servicio = data.get('servicio', cita.servicio)
         cita.fecha = data.get('fecha', cita.fecha)
-        cita.descripcion = data.get('descripcion', cita.descripcion)
+        cita.hora = data.get('hora', cita.hora)
+        cita.estado = data.get('estado', cita.estado)
         db.session.commit()
         return cita.to_dict()
 

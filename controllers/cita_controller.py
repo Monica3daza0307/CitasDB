@@ -11,7 +11,7 @@ cita_bp = Blueprint('cita_bp', __name__)
 service = CitaService()
 
 @cita_bp.route('/citas', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def get_citas():
     try:
         citas = service.listar()

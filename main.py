@@ -27,7 +27,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 jwt = JWTManager(app)
 
-# Registrar blueprints
+# Registrar blueprints (prefijos corregidos)
+# auth -> /api/auth  => /api/auth/login
+# users -> /api      => /api/login, /api/register, /api/users
+# citas -> /api      => /api/citas
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(users_bp, url_prefix='/api')
 app.register_blueprint(cita_bp, url_prefix='/api')
