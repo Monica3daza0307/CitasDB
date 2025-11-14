@@ -15,5 +15,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(100), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
+    # role: 'user' or 'admin'
+    role = Column(String(50), nullable=False, default='user')
 
     citas = relationship('Cita', back_populates='user', cascade='all, delete-orphan')

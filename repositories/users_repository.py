@@ -21,6 +21,13 @@ class UsersRepository:
         logger.info("Obteniendo todos los usuarios desde el repositorio")
         return self.db.query(User).all()
 
+    def get_user_by_username(self, username: str):
+        """
+        Busca y retorna un usuario por su nombre de usuario.
+        """
+        logger.info(f"Buscando usuario por username: {username}")
+        return self.db.query(User).filter(User.username == username).first()
+
     def get_user_by_id(self, user_id: int):
         """
         Busca y retorna un usuario específico por su ID.
@@ -28,12 +35,12 @@ class UsersRepository:
         logger.info(f"Buscando usuario por ID: {user_id}")
         return self.db.query(User).filter(User.id == user_id).first()
 
-    def create_user(self, username: str, password: str):
+    def create_user(self, username: str, password: str, role: str = 'user'):
         """
         Crea y almacena un nuevo usuario en la base de datos.
         """
         logger.info(f"Creando usuario: {username}")
-        new_user = User(username=username, password=password)
+        new_user = User(username=username, password=password, role=role)
         self.db.add(new_user)
         self.db.commit()
         self.db.refresh(new_user)

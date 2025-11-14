@@ -47,6 +47,7 @@ class UsersService:
         """
         password_hashed = generate_password_hash(password)
         logger.info(f"Creando usuario: {username}")
+        # Por defecto crea usuarios con rol 'user'. Se puede pasar 'admin' si se requiere.
         return self.users_repository.create_user(username, password_hashed)
 
     def update_user(self, user_id: int, username: str = None, password: str = None):

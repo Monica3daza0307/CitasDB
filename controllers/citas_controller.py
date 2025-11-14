@@ -4,11 +4,15 @@ logger = logging.getLogger(__name__)
 
 from flask import Blueprint, request, jsonify
 from services.cita_service import CitaService
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from config.database import get_db_session
 
+# Obtain a DB session instance (Session object) and pass it to the service.
+db_session = get_db_session()
+
+
 citas_bp = Blueprint('citas_bp', __name__)
-service = CitaService(get_db_session())
+service = CitaService(db_session)
 
 @citas_bp.route('/citas', methods=['GET'])
 @jwt_required()
@@ -52,12 +56,20 @@ def create_cita():
         logger.warning("Faltan campos obligatorios para crear cita")
         return jsonify({'error': 'Todos los campos son obligatorios'}), 400, {'Content-Type': 'application/json; charset=utf-8'}
 
+    # Extract user id from JWT identity and pass it to the service/repository
+    jwt_identity = get_jwt_identity()
+    try:
+        user_id = int(jwt_identity) if jwt_identity is not None else None
+    except (TypeError, ValueError):
+        user_id = None
+
     cita = service.crear_cita(
         paciente=data['paciente'],
         fecha=data['fecha'],
         hora=data['hora'],
         motivo=data['motivo'],
-        estado=data['estado']
+        estado=data['estado'],
+        user_id=user_id
     )
     logger.info(f"Cita creada: {cita.id}")
     return jsonify({'id': cita.id}), 201, {'Content-Type': 'application/json; charset=utf-8'}
